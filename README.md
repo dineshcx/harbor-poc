@@ -22,7 +22,7 @@ export ANTHROPIC_API_KEY=your_anthropic_key
 Run the example task:
 
 ```bash
-harbor run -c poc/job.yaml --job-name my-first-run -y
+harbor run -c job.yaml --job-name my-first-run -y
 ```
 
 This will:
@@ -31,30 +31,30 @@ This will:
 3. Start Claude Code inside the sandbox with the task instruction
 4. Download artifacts (output files) and agent trajectory when done
 
-Results appear in `poc/jobs/my-first-run/`.
+Results appear in `jobs/my-first-run/`.
 
 ---
 
 ## Project Structure
 
 ```
-poc/
-├── job.yaml                          ← Job configuration (which agent, environment, tasks)
+├── job.yaml                              ← Job configuration (which agent, environment, tasks)
+├── jobs/                                 ← Where results are saved (created after first run)
 └── tasks/
-    └── simple-test/                  ← A single task
-        ├── instruction.md            ← What the agent should do (the prompt)
-        ├── task.toml                 ← Task metadata and config
-        ├── data/                     ← Input files for the agent
+    └── simple-test/                      ← A single task
+        ├── instruction.md                ← What the agent should do (the prompt)
+        ├── task.toml                     ← Task metadata and config
+        ├── data/                         ← Input files for the agent
         │   └── students.csv
-        ├── skills/                   ← Claude Code skills (document generation helpers)
+        ├── skills/                       ← Claude Code skills (document generation helpers)
         │   ├── xlsx/SKILL.md
         │   ├── docx/SKILL.md
         │   ├── pptx/SKILL.md
         │   ├── pdf/SKILL.md
         │   └── jupyter-notebook/SKILL.md
-        ├── prompts/                  ← System prompt for the agent
+        ├── prompts/                      ← System prompt for the agent
         │   └── system-prompt.md
-        └── environment/              ← Sandbox environment definition
+        └── environment/                  ← Sandbox environment definition
             └── Dockerfile
 ```
 
@@ -175,7 +175,7 @@ The current Dockerfile includes:
 This is the main config file that ties everything together:
 
 ```yaml
-jobs_dir: poc/jobs                  # Where results are saved
+jobs_dir: jobs                      # Where results are saved
 n_attempts: 1                       # Retry count per task
 timeout_multiplier: 1.0
 agent_timeout_multiplier: 5         # Agent timeout = base * this
@@ -205,7 +205,7 @@ artifacts:
   - /workspace                      # Download everything from /workspace after run
 
 tasks:
-  - path: poc/tasks/simple-test     # Which task(s) to run
+  - path: tasks/simple-test         # Which task(s) to run
 ```
 
 ### Key settings to know
@@ -230,7 +230,7 @@ tasks:
 
 ```bash
 # Set force_build: true in job.yaml, then:
-harbor run -c poc/job.yaml --job-name first-run -y
+harbor run -c job.yaml --job-name first-run -y
 ```
 
 This takes several minutes as it builds the Docker image on E2B. After this, set `force_build: false`.
@@ -238,7 +238,7 @@ This takes several minutes as it builds the Docker image on E2B. After this, set
 ### Subsequent runs (reuses cached template):
 
 ```bash
-harbor run -c poc/job.yaml --job-name my-run-name -y
+harbor run -c job.yaml --job-name my-run-name -y
 ```
 
 This is fast — just spins up a sandbox, uploads files, runs the agent.
@@ -246,18 +246,18 @@ This is fast — just spins up a sandbox, uploads files, runs the agent.
 ### Run with a different job name each time:
 
 ```bash
-harbor run -c poc/job.yaml --job-name experiment-1 -y
-harbor run -c poc/job.yaml --job-name experiment-2 -y
+harbor run -c job.yaml --job-name experiment-1 -y
+harbor run -c job.yaml --job-name experiment-2 -y
 ```
 
 ---
 
 ## Output Structure
 
-After a run, results appear in `poc/jobs/<job-name>/`:
+After a run, results appear in `jobs/<job-name>/`:
 
 ```
-poc/jobs/my-run-name/
+jobs/my-run-name/
 ├── config.json                              ← Job configuration snapshot
 ├── job.log                                  ← High-level job log
 ├── result.json                              ← Overall results and metrics
@@ -284,10 +284,10 @@ poc/jobs/my-run-name/
 
 ## Creating a New Task
 
-1. Create a new directory under `poc/tasks/`:
+1. Create a new directory under `tasks/`:
 
 ```bash
-mkdir -p poc/tasks/my-new-task/{data,prompts,environment}
+mkdir -p tasks/my-new-task/{data,prompts,environment}
 ```
 
 2. **Write the instruction** (`instruction.md`):
@@ -301,7 +301,7 @@ Analyze the sales data at /workspace/inputs/sales.csv and create:
 3. **Add input files** to `data/`:
 
 ```bash
-cp your-data-file.csv poc/tasks/my-new-task/data/
+cp your-data-file.csv tasks/my-new-task/data/
 ```
 
 4. **Create `task.toml`**:
@@ -321,22 +321,22 @@ skills_dir = "/workspace/skills"
 5. **Copy or symlink the shared environment and skills** (reuse from simple-test):
 
 ```bash
-cp -r poc/tasks/simple-test/environment/Dockerfile poc/tasks/my-new-task/environment/
-cp -r poc/tasks/simple-test/skills poc/tasks/my-new-task/skills
-cp -r poc/tasks/simple-test/prompts poc/tasks/my-new-task/prompts
+cp -r tasks/simple-test/environment/Dockerfile tasks/my-new-task/environment/
+cp -r tasks/simple-test/skills tasks/my-new-task/skills
+cp -r tasks/simple-test/prompts tasks/my-new-task/prompts
 ```
 
 6. **Update `job.yaml`** to point to your task:
 
 ```yaml
 tasks:
-  - path: poc/tasks/my-new-task
+  - path: tasks/my-new-task
 ```
 
 7. **Run it**:
 
 ```bash
-harbor run -c poc/job.yaml --job-name my-new-task-run -y
+harbor run -c job.yaml --job-name my-new-task-run -y
 ```
 
 ---
