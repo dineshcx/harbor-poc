@@ -1,0 +1,103 @@
+{
+    "id": "ce4b8a47-7c60-4361-9a9a-306674a1c13f",
+    "task_name": "simple-test",
+    "trial_name": "simple-test__CxypMFz",
+    "trial_uri": "file:///Users/dinesh.c/Repo/poc/harbor-poc/jobs/twoagent-1/simple-test__CxypMFz",
+    "task_id": {
+        "path": "tasks/simple-test"
+    },
+    "source": null,
+    "task_checksum": "f9b4065c8f5c3868c6050ce89f760c481679075969ae77f547159f1f5233b7f8",
+    "config": {
+        "task": {
+            "path": "tasks/simple-test",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "simple-test__CxypMFz",
+        "trials_dir": "jobs/twoagent-1",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": 5.0,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "claude-code",
+            "import_path": null,
+            "model_name": "anthropic/claude-opus-4-6",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {
+                "reasoning_effort": "high",
+                "pe_model_id": "claude-opus-4-6-claude-web-system-prompt",
+                "system_prompt_file": "/workspace/prompts/system-prompt.md"
+            },
+            "env": {}
+        },
+        "environment": {
+            "type": "e2b",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts_json": null,
+            "env": {
+                "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+                "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+            },
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": true
+        },
+        "artifacts": [
+            "/workspace"
+        ],
+        "job_id": "8abb45e9-c732-4441-a1e0-9bfca95dbd41"
+    },
+    "agent_info": {
+        "name": "claude-code",
+        "version": "2.1.86",
+        "model_info": {
+            "name": "claude-opus-4-6",
+            "provider": "anthropic"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 2424367,
+        "n_cache_tokens": 2328480,
+        "n_output_tokens": 7252,
+        "cost_usd": null,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": null,
+    "exception_info": null,
+    "started_at": "2026-03-28T21:01:23.439177Z",
+    "finished_at": "2026-03-28T21:07:13.441698Z",
+    "environment_setup": {
+        "started_at": "2026-03-28T21:01:23.489496Z",
+        "finished_at": "2026-03-28T21:01:25.786497Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-03-28T21:01:33.366385Z",
+        "finished_at": "2026-03-28T21:01:49.436661Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-03-28T21:01:49.437134Z",
+        "finished_at": "2026-03-28T21:04:39.803603Z"
+    },
+    "verifier": null
+}
