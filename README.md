@@ -13,6 +13,7 @@ This guide explains how to run AI agent tasks using Harbor with E2B sandboxes, a
 ```bash
 export E2B_API_KEY=your_e2b_key
 export ANTHROPIC_API_KEY=your_anthropic_key
+export OPENAI_API_KEY=your_openai_key
 ```
 
 ---
