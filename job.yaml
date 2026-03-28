@@ -1,0 +1,33 @@
+jobs_dir: poc/jobs
+n_attempts: 1
+timeout_multiplier: 1.0
+agent_timeout_multiplier: 5
+
+orchestrator:
+  type: local
+  n_concurrent_trials: 1
+  quiet: false
+
+environment:
+  type: e2b
+  force_build: false
+  delete: true
+  env:
+    - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+
+verifier:
+  disable: true
+
+agents:
+  - name: claude-code
+    model_name: anthropic/claude-opus-4-6
+    kwargs:
+      reasoning_effort: high
+      pe_model_id: claude-opus-4-6-claude-web-system-prompt
+      system_prompt_file: /workspace/prompts/system-prompt.md
+
+artifacts:
+  - /workspace
+
+tasks:
+  - path: poc/tasks/simple-test

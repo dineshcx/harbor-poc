@@ -1,0 +1,9 @@
+version = "1.0"
+
+[metadata]
+taskId = "pd-test"
+category = "Test"
+difficulty = "1"
+
+[environment]
+skills_dir = "/workspace/skills"

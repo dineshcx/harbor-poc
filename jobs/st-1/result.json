@@ -1,0 +1,23 @@
+{
+    "id": "fdea8205-75e2-434b-895f-81c64e0e9de2",
+    "started_at": "2026-03-29T01:41:53.290775",
+    "finished_at": "2026-03-29T01:54:28.207476",
+    "n_total_trials": 1,
+    "stats": {
+        "n_trials": 1,
+        "n_errors": 0,
+        "evals": {
+            "claude-code__claude-opus-4-6__adhoc": {
+                "n_trials": 0,
+                "n_errors": 0,
+                "metrics": [
+                    {
+                        "mean": 0.0
+                    }
+                ],
+                "reward_stats": {},
+                "exception_stats": {}
+            }
+        }
+    }
+}

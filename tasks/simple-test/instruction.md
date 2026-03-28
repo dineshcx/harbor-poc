@@ -1,0 +1,2 @@
+Read the CSV file at /workspace/inputs/students.csv which contains student names and scores. Create an Excel file called report.xlsx with one worksheet named "Summary". The worksheet should have columns: Name, Score, Grade. Assign grades based on scores: A (90-100), B (80-89), C (70-79), D (60-69), F (below 60). Include all students from the CSV. At the bottom, add a row with the average score using an Excel formula. Save the file to /workspace/report.xlsx.
+also create graph in ppt showing marks distribution
