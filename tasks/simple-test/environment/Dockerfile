@@ -67,7 +67,8 @@ RUN python -m pip install --upgrade pip \
     lxml==5.4.0 \
     defusedxml==0.7.1 \
     Pillow \
-    markitdown[pptx]
+    markitdown[pptx] \
+    'stirrup[litellm]==0.1.8'
 
 RUN npm install -g --no-audit --no-fund \
     @openai/codex \

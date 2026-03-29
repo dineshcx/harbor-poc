@@ -20,18 +20,25 @@ verifier:
   disable: true
 
 agents:
-  - name: codex
-    model_name: openai/gpt-5.4
-    kwargs:
-      reasoning_effort: xhigh
-      pe_model_id: gpt-5.4-xhigh
 
-  - name: claude-code
+  - import_path: harbor_stirup_agent:HarborGDPvalAAStirrup
     model_name: anthropic/claude-opus-4-6
     kwargs:
       reasoning_effort: high
-      pe_model_id: claude-opus-4-6-claude-web-system-prompt
-      system_prompt_file: /workspace/prompts/system-prompt.md
+      pe_model_id: claude-opus-4-6-stirrup
+
+  # - name: codex
+  #   model_name: openai/gpt-5.4
+  #   kwargs:
+  #     reasoning_effort: xhigh
+  #     pe_model_id: gpt-5.4-xhigh
+
+  # - name: claude-code
+  #   model_name: anthropic/claude-opus-4-6
+  #   kwargs:
+  #     reasoning_effort: high
+  #     pe_model_id: claude-opus-4-6-claude-web-system-prompt
+  #     system_prompt_file: /workspace/prompts/system-prompt.md
 
 artifacts:
   - /workspace
