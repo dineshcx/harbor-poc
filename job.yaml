@@ -5,7 +5,7 @@ agent_timeout_multiplier: 5
 
 orchestrator:
   type: local
-  n_concurrent_trials: 1
+  n_concurrent_trials: 2
   quiet: false
 
 environment:
