@@ -95,7 +95,6 @@ RUN printf '%s\n' \
     > /usr/local/lib/python3.12/site-packages/sitecustomize.py
 
 COPY data/ /workspace/inputs/
-COPY skills/ /workspace/skills/
 
 # Install task-specific requirements when present.
 RUN if [ -f /workspace/inputs/requirements.txt ]; then \
