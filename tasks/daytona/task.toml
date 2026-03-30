@@ -1,0 +1,12 @@
+version = "1.0"
+
+[metadata]
+taskId = "simple-test"
+category = "Test"
+difficulty = "1"
+
+[environment]
+build_timeout_sec = 1800.0
+cpus = 4
+memory_mb = 4096
+skills_dir = "/workspace/skills"

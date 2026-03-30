@@ -9,7 +9,7 @@ orchestrator:
   quiet: false
 
 environment:
-  type: e2b
+  type: daytona
   force_build: false
   delete: true
   env:
@@ -44,4 +44,4 @@ artifacts:
   - /workspace
 
 tasks:
-  - path: tasks/simple-test
+  - path: tasks/daytona
