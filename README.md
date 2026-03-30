@@ -369,6 +369,129 @@ harbor run -c job.yaml --job-name my-new-task-run -y
 
 ---
 
+## Running with Daytona
+
+Daytona is an alternative sandbox provider to E2B. It supports building images directly from a Dockerfile without needing a separate template build step.
+
+### Prerequisites
+
+1. **Daytona API key** — sign up at [daytona.io](https://app.daytona.io) and set `DAYTONA_API_KEY`
+
+```bash
+export DAYTONA_API_KEY=your_daytona_key
+export ANTHROPIC_API_KEY=your_anthropic_key
+```
+
+### Daytona Task Structure
+
+When using Daytona, the task directory layout differs from E2B. The key rule is: **all files referenced by `COPY` in the Dockerfile must live inside the `environment/` folder**.
+
+```
+tasks/
+└── daytona/
+    ├── task.toml
+    ├── tests/
+    │   └── test.sh
+    └── environment/               ← Everything the Dockerfile needs goes here
+        ├── Dockerfile
+        ├── data/                  ← Input files (COPY'd into the image)
+        │   └── students.csv
+        └── skills/                ← Skills (COPY'd into the image)
+            ├── xlsx/
+            ├── docx/
+            ├── pptx/
+            └── pdf/
+```
+
+### Why No `docker-compose.yaml`
+
+Harbor auto-detects the environment strategy based on whether `docker-compose.yaml` exists:
+
+| File present | Strategy | What happens |
+|---|---|---|
+| No `docker-compose.yaml` | **`_DaytonaDirect`** | Daytona builds the image natively on its infrastructure — fast, with layer caching |
+| `docker-compose.yaml` exists | `_DaytonaDinD` | Creates a Docker-in-Docker sandbox, starts dockerd inside it, then runs `docker compose build` — much slower, no cache |
+
+**Do not place a `docker-compose.yaml` in the `environment/` folder** for single-container tasks. The DinD path adds significant overhead (Docker daemon startup, double-layer networking, no layer cache) and the image build can easily exceed the default 600-second timeout.
+
+### Dockerfile COPY Paths
+
+In Daytona direct mode, `Image.from_dockerfile()` resolves all `COPY` source paths **relative to the Dockerfile's directory** (i.e., `environment/`). This means:
+
+```dockerfile
+# Correct — paths relative to environment/
+COPY data/ /workspace/inputs/
+COPY skills/ /workspace/skills/
+
+# Wrong — these would look for environment/environment/data/ which doesn't exist
+COPY environment/data/ /workspace/inputs/
+```
+
+If you're converting an existing task that used `docker-compose.yaml` with a build context set to the task root, you need to:
+
+1. Delete the `docker-compose.yaml`
+2. Move `skills/` and any other referenced directories into `environment/`
+3. Update `COPY` paths in the Dockerfile to be relative to `environment/`
+
+### `task.toml` Configuration for Daytona
+
+Daytona tasks need resource and timeout settings in `task.toml`:
+
+```toml
+version = "1.0"
+
+[metadata]
+taskId = "my-task"
+category = "Test"
+difficulty = "1"
+
+[environment]
+build_timeout_sec = 1800.0
+cpus = 4
+memory_mb = 4096
+skills_dir = "/workspace/skills"
+```
+
+| Setting | Default | Recommended | Purpose |
+|---|---|---|---|
+| `build_timeout_sec` | 600.0 | 1800.0 | Time allowed for Daytona to build the image. Heavy Dockerfiles (LibreOffice, many pip/npm packages) need more than the 10-minute default |
+| `cpus` | 1 | 2–4 | CPUs allocated to the sandbox |
+| `memory_mb` | 2048 | 4096 | Memory for the sandbox. Must fit within your Daytona org's total memory limit (check [dashboard/limits](https://app.daytona.io/dashboard/limits)) |
+| `skills_dir` | — | `/workspace/skills` | Where skills are located inside the sandbox |
+
+### `job.yaml` for Daytona
+
+Set `environment.type` to `daytona`:
+
+```yaml
+environment:
+  type: daytona
+  force_build: false
+  delete: true
+  env:
+    - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+```
+
+### Running
+
+```bash
+harbor run -c job.yaml --job-name my-daytona-run -y
+```
+
+The first run builds the image on Daytona's infrastructure. Subsequent runs reuse the cached image (unless `force_build: true`).
+
+### Daytona Troubleshooting
+
+| Error | Cause | Fix |
+|---|---|---|
+| `Environment start timed out after 600.0 seconds` | Image build takes longer than the default timeout | Increase `build_timeout_sec` in `task.toml` (e.g., 1800.0) |
+| `Total memory limit exceeded. Maximum allowed: 10GiB` | Sandbox memory exceeds your Daytona org tier limit | Lower `memory_mb` in `task.toml` or clean up stale sandboxes at [app.daytona.io](https://app.daytona.io) |
+| `Selected strategy: _DaytonaDinD` (unexpectedly slow) | `docker-compose.yaml` exists in `environment/` | Delete it to use the faster direct mode |
+| `DAYTONA_API_KEY` error | API key not set | `export DAYTONA_API_KEY=your_key` |
+| `COPY` fails during image build | File paths in Dockerfile not relative to `environment/` | Move files into `environment/` and update COPY paths |
+
+---
+
 ## Harbor Fork Changes
 
 We maintain a small set of patches to Harbor for E2B compatibility. See `HARBOR_FORK_CHANGES.md` for the full list of changes with before/after code.
