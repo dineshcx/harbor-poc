@@ -21,11 +21,19 @@ verifier:
 
 agents:
 
-  - import_path: harbor_stirup_agent:HarborGDPvalAAStirrup
+  - name: claude-opus-4-6-max
+    import_path: harbor_stirup_agent:HarborGDPvalAAStirrup
     model_name: anthropic/claude-opus-4-6
     kwargs:
-      reasoning_effort: high
-      pe_model_id: claude-opus-4-6-stirrup
+      reasoning_effort: max
+      pe_model_id: claude-opus-4-6-max
+
+  - name: gpt-5.4-xhigh
+    import_path: harbor_stirup_agent:HarborGDPvalAAStirrup
+    model_name: openai/gpt-5.4
+    kwargs:
+      reasoning_effort: xhigh
+      pe_model_id: gpt-5.4-xhigh
 
   # - name: codex
   #   model_name: openai/gpt-5.4

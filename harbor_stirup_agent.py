@@ -584,7 +584,7 @@ class HarborGDPvalAAStirrup(BaseInstalledAgent):
             "reasoning_effort",
             cli="--reasoning-effort",
             type="enum",
-            choices=["none", "minimal", "low", "medium", "high", "xhigh", "default"],
+            choices=["none", "minimal", "low", "medium", "high", "xhigh", "max", "default"],
             default="high",
         ),
         CliFlag(
